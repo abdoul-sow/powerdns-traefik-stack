@@ -58,7 +58,7 @@ powerdns/
 
 - **PowerDNS Admin Web Interface**: https://admin.dns.sample.net (configure this using the DOMAIN env var)
 - **PowerDNS API**: https://api.dns.sample.net (for programmatic access to manage DNS records)
-- **DNS Service**: Available on port 53/udp - you can create a DNS record like a.dns.sample.net to point to your DNS server for easy access
+- **DNS Service**: Available on port 53/udp - you can create a DNS record like `a.dns.sample.net` to point to your DNS server for easy access
 
 ## SSL Support
 
