@@ -18,36 +18,7 @@ This stack includes:
 
 ## Configuration
 
-The environment variables can be set in a `.env` file in the project root. Below are the essential variables:
-
-```
-VOLUME_PATH=/opt/powerdns                   # Base path for persistent storage
-DOMAIN=dns.example.com                      # Your domain name for PowerDNS Admin
-
-# MariaDB Settings
-MARIADB_ROOT_PASSWORD=your_secure_password
-MARIADB_USER=powerdns
-MARIADB_PASSWORD=your_secure_password
-MARIADB_DATABASE=powerdns
-
-# PowerDNS Settings
-PDNS_primary=yes
-PDNS_webserver=yes
-PDNS_webserver_address=0.0.0.0
-PDNS_webserver_allow_from=0.0.0.0/0
-PDNS_api=yes
-PDNS_api_key=your_secure_api_key
-PDNS_dnsupdate=true
-PDNS_version_string=anonymous
-
-# PowerDNS Admin Settings
-GUNICORN_LOGLEVEL=DEBUG
-GUNICORN_TIMEOUT=60
-GUNICORN_WORKERS=2
-SECRET_KEY=your_secure_secret_key
-SQLALCHEMY_DATABASE_URI=mysql://powerdns_admin:your_secure_password@mariadb/powerdns_admin
-TZ=Africa/Abidjan
-```
+The environment variables can be set in a `.env` file in the project root.
 
 ## Directory Structure
 
