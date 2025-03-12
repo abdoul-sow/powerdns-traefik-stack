@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+    mariadb:
+        environment:
+            BITNAMI_DEBUG: ${BITNAMI_DEBUG:-false}
+            MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?err}
+            MARIADB_USER: ${MARIADB_USER:-powerdns}
+            MARIADB_PASSWORD: ${MARIADB_PASSWORD:?err}
+            MARIADB_DATABASE: ${MARIADB_DATABASE:-powerdns}
+        command: "--character-set-server=utf8mb4 --collation-server=utf8mb4_bin"
+        image: mariadb:lts
+        volumes:
+          - ${VOLUME_PATH:?err}/mariadb-data:/var/lib/mysql
+          - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
+        restart: always
+        # ports:
+        #   - "3306:3306"
+
+    powerdns:
+        environment:
+            PDNS_primary: ${PDNS_primary:-yes}
+            PDNS_webserver: ${PDNS_webserver:-yes}
+            PDNS_webserver_address: ${PDNS_webserver_address:-0.0.0.0}
+            PDNS_webserver_allow_from: ${PDNS_webserver_allow_from:-0.0.0.0/0}
+            PDNS_api: ${PDNS_api:-yes}
+            PDNS_api_key: ${PDNS_api_key:?err}
+            MYSQL_ENV_MYSQL_HOST: mariadb
+            MYSQL_ENV_MYSQL_DATABASE: ${MARIADB_DATABASE}
+            MYSQL_ENV_MYSQL_USER: ${MARIADB_USER}
+            MYSQL_ENV_MYSQL_PASSWORD: ${MARIADB_PASSWORD}
+            MYSQL_ENV_MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+            PDNS_dnsupdate: ${PDNS_dnsupdate:-true}
+            PDNS_version_string: ${PDNS_version_string:-anonymous}
+        image: pschiffe/pdns-mysql:alpine
+        restart: always
+        ports:
+          - "53:53/udp"
+          # - "8081:8081"
+        depends_on:
+          - mariadb
+
+    powerdns-admin:
+        environment:
+            GUNICORN_LOGLEVEL: ${GUNICORN_LOGLEVEL:-DEBUG}
+            GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-60}
+            GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+            SECRET_KEY: ${SECRET_KEY:?err}
+            SQLALCHEMY_DATABASE_URI: ${SQLALCHEMY_DATABASE_URI:?err}
+            TZ: ${TZ:-Africa/Abidjan}
+        image: powerdnsadmin/pda-legacy:latest
+        restart: always
+        # ports:
+        #   - "80:80"
+        depends_on:
+          - mariadb
+          - powerdns
+
